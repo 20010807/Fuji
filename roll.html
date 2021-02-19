@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Page Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        #dices {
+            min-height: 100px;
+        }
+
+.square {
+  height: 120px;
+  width: 120px;
+  background-color: #ffffff;
+  border: solid;
+  	display:grid;
+    grid-template-columns: auto;
+  	grid-template-rows: auto; 
+    justify-items: center;
+    align-items: center;
+}
+
+
+
+.circle {
+  height: 30px;
+  width: 30px;
+  background-color: #555;
+  border-radius: 50%;
+}
+
+
+        button {
+            font-family: Hack, monospace;
+            background: white;
+            color: black;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 0.5rem;
+            border: none;
+            transition: all 0.5s;
+            /* border-radius: 10px; */
+            width: auto;
+            position: relative;
+            min-width: 150px;
+        }
+
+        button:hover {
+            background: #2b2bff;
+            border: 0;
+            /* transition: all 0.5s; */
+            /* border-radius: 10px; */
+            /* box-shadow: 0px 6px 15px #0000ff61; */
+            color: #ffffff;
+        }
+
+        input {
+            font-family: Hack, monospace;
+            font-size: 1em;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: auto;
+            position: relative;
+            max-width: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="square">
+      <div class="circle"></div>
+      <div class="circle"></div>
+      <div class="circle"> </div>
+
+</div>
+    <div id="dices"></div>
+    <button id="btnRollAll" type="button" onclick="rollAllDices()">Roll all:</button>
+    <input type="number" id="playerDices" min=3 value=5 max=6 onchange="clearDices()">
+    <br><br>
+    <button id="btnRollDice" type="button" onclick="rollSpecificDice()">Roll dice: </button>
+    <input type="number" id="rollInput" min=1 max=7><br>
+    <br>
+    <button id="btnClear" type="button" onclick="clearDices()">Clear</button>
+
+    <script>
+        const set1 = ["0", "1y", "2r", "3b", "4b", "5r", "6y"];
+        const set2 = ["0", "1y", "2r", "3b", "4b", "5r", "6y"];
+        const set3 = ["0", "1r", "2b", "3y", "4y", "5b", "6r"];
+        const set4 = ["0", "1r", "2b", "3y", "4y", "5b", "6r"];
+        const set5 = ["0", "1b", "2y", "3r", "4r", "5y", "6b"];
+        const set6 = ["0", "1b", "2y", "3r", "4r", "5y", "6b"];
+
+        var dado1 = set1;
+        var dado2 = set2;
+        var dado3 = set3;
+        var dado4 = set4;
+        var dado5 = set5;
+        var dado6 = set6;
+
+        function rollAllDices(min = 1, max = 6) {
+            let dices = document.getElementById("playerDices").value
+
+            if (document.getElementById("dices").childNodes.length >= dices) {
+                clearDices();
+            }
+
+            for (let index = 1; index <= dices; index++) {
+                generateDiceFace(index);
+            }
+
+        }
+
+        function clearDices() {
+            document.getElementById("dices").innerHTML = "";
+            var dado1 = set1;
+            var dado2 = set2;
+            var dado3 = set3;
+            var dado4 = set4;
+            var dado5 = set5;
+            var dado6 = set6;
+        }
+
+        function generateDiceFace(diceId) {
+            // console.log("start generateDiceFace : ", diceId);
+            let newValFromSet = random();
+
+            let currentDice = dado1;
+            switch (Number(diceId)) {
+                case 1:
+                    currentDice = dado1;
+                    break;
+                case 2:
+                    currentDice = dado2;
+                    break;
+                case 3:
+                    currentDice = dado3;
+                    break;
+                case 4:
+                    currentDice = dado4;
+                    break;
+                case 5:
+                    currentDice = dado5;
+                    break;
+                case 6:
+                    currentDice = dado6;
+                    break;
+                default:
+                    break;
+            }
+
+            let diceFace = currentDice[newValFromSet];
+            // console.log("generateDiceFace currentDice-newVal-x", currentDice, newValFromSet, x)
+            appendImage(diceFace, diceId);
+        }
+
+        function random(min = 1, max = 6) {
+            return (min - 1) + Math.ceil(Math.random() * (max - min + 1));
+        }
+
+        function appendImage(diceFace, diceId) {
+            // console.log("append image - new dice: ", diceFace, diceId)
+            let newSrcImage = './Dices/' + diceFace + '.png';
+
+            if (diceId) {
+                let diceFound = document.getElementById(diceId);
+                if (diceFound) {
+                    //sostituisco l'immagine del dado alla posizione "diceId" con la nuova faccia 
+                    diceFound.src = newSrcImage;
+                    return;
+                }
+            }
+
+            appendNewDice(diceId, newSrcImage);
+        }
+
+        function appendNewDice(diceId, newSrcImage) {
+            var img = document.createElement("img");
+            img.id = diceId;
+            img.src = newSrcImage;
+            img.style = "margin-right:10px";
+            var dicesArea = document.getElementById("dices");
+            dicesArea.appendChild(img);
+        }
+
+        function rollSpecificDice() {
+            let diceToRoll = document.getElementById("rollInput").value;
+            if (!diceToRoll || diceToRoll === "") {
+                alert("Immetti il numero del dado da cambiare");
+                return;
+            }
+
+            generateDiceFace(diceToRoll);
+        }
+
+    </script>
+</body>
+
+</html>
